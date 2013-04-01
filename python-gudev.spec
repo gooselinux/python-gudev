@@ -12,8 +12,11 @@ URL:            http://github.com/nzjrs/python-gudev
 # Tar.gz can be downloaded from
 # http://github.com/nzjrs/python-gudev/tarball/%{version}
 Source0:        %{srcname}.tar.gz
+
+# patch from upstream
+Patch0:         0001-Fix-crash-when-freeing-result-of-g_udev_client_query.patch
 Version:        147.1
-Release:        4%{?dist}
+Release:        4%{?dist}.1
 Group:          Development/Libraries
 License:        LGPLv3+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -30,6 +33,9 @@ python-gudev is a Python (PyGObject) binding to the GUDev UDEV library.
 
 %prep
 %setup -q -n %{srcname}
+
+# override fuzzy to 1 so that patch can be applied
+%patch0 -F1 -p1
 
 %build
 sh autogen.sh --prefix %{_prefix} --disable-static
@@ -55,6 +61,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/*
 
 %changelog
+* Mon Sep 13 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 147.1-4.1
+- Added upstream patch
+- Resolves: rhbz#637084
+- Related: rhbz#631789
+
 * Mon Mar 15 2010 Miroslav Suchý <msuchy@redhat.com> 147.1-4
 - 572609 - do not strip all debuginfo
 
